@@ -1,44 +1,42 @@
 import { Link } from "react-router-dom";
 
-export default function CenterCard({ center = {}, children }) {
-  if (!center) return null; // defensive
+const FALLBACK_IMG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'>
+       <rect width='100%' height='100%' rx='8' fill='#e2e8f0'/>
+       <text x='50%' y='52%' text-anchor='middle' font-size='12' fill='#64748b' font-family='Arial, sans-serif'>Clinic</text>
+     </svg>`
+  );
 
-  // read common fields safely (API fields vary)
-  const id    = center._id ?? center.id ?? center.hospital_id ?? null;
-  const name  = center.name ?? center["Hospital Name"] ?? center["HospitalName"] ?? "Medical Center";
+export default function CenterCard({ center = {}, children }) {
+  const id    = center._id ?? center.id ?? null;
+  const name  = center.name ?? center["Hospital Name"] ?? "Medical Center";
   const city  = center.city ?? center.City ?? "";
   const state = center.state ?? center.State ?? "";
   const address = center.address ?? center.Address ?? "";
-  const phone = center.phone ?? center.Phone ?? "";
   const imageUrl = center.imageUrl;
 
   return (
     <article className="center-card">
       <img
         className="center-card__img"
-        src={imageUrl || "https://via.placeholder.com/96x96?text=Clinic"}
+        src={imageUrl || FALLBACK_IMG}
         alt={name}
         loading="lazy"
+        onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
       />
 
       <div className="center-card__body">
         <h3 className="center-card__name">{name}</h3>
-
-        {(city || state) && (
+        {(city || state || address) && (
           <p className="center-card__addr">
-            {address && `${address}, `}{city}{city && state ? ", " : ""}{state}
+            {[address, city, state].filter(Boolean).join(", ")}
           </p>
         )}
 
         <div className="center-card__actions">
-          {children ? (
-            children
-          ) : (
-            // if you don't want navigation yet, replace Link with a button
-            <Link to={`/booking/${id ?? ""}`} state={{ center }} className="btn btn-primary">
-              Book Appointment
-            </Link>
-          )}
+          {children}
         </div>
       </div>
     </article>
