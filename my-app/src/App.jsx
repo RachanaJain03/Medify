@@ -1,26 +1,24 @@
-import { Routes, Route} from "react-router-dom"
-import Home from "./pages/Home"
-import Results from "./pages/Results"
-import Booking from "./pages/Booking"
-import MyBooking from "./pages/myBookings"
-import Navbar from "./components/Navbar"
-import MyBookings from "./pages/myBookings"
+import { Routes, Route, Navigate } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import Home from "./pages/Home";
+import Results from "./pages/Results";
+import Booking from "./pages/Booking";
+import MyBookings from "./pages/MyBookings";
 
-
-function App(){
-    return(
-        <>
-         <Navbar/>
-         <Routes>
-            <Route path = "/" element={<Home/>}/>
-            <Route path = "/results" element={<Results/>}/>
-            <Route path = "/booking/:centerId" element={<Booking/>}/>
-            <Route path = "/MyBookings" element={<MyBookings/>}/>
-         </Routes>
-        
-        
-        </>
-    )
+export default function App() {
+  return (
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/results" element={<Results />} />
+        <Route path="/booking/:centerId" element={<Booking />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        {/* alias so /my-booking also works */}
+        <Route path="/my-booking" element={<Navigate to="/my-bookings" replace />} />
+        {/* catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
 }
-
-export default App;
