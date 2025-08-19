@@ -3,7 +3,7 @@ import NavBar from "./components/Navbar";
 import Home from "./pages/Home";
 import Results from "./pages/Results";
 import Booking from "./pages/Booking";
-import MyBookings from "./pages/MyBookings";
+import MyBookings from "./pages/myBookings";
 
 export default function App() {
   return (
