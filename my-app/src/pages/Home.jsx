@@ -11,6 +11,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero + Search */}
+      
       <section className="section section--alt" style={{ paddingTop: 28, paddingBottom: 28 }}>
         <div className="container">
           <div className="card" style={{ display: "grid", gap: 16 }}>

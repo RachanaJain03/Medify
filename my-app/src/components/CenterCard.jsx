@@ -36,7 +36,7 @@ export default function CenterCard({ center = {}, children }) {
         )}
 
         <div className="center-card__actions">
-          {children}
+          <span data-cy="book-cta">{children}</span>
         </div>
       </div>
     </article>

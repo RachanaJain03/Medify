@@ -5,7 +5,6 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
   const [elevated, setElevated] = useState(false);
 
-  // tiny shadow when you scroll
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 8);
     onScroll();
@@ -33,13 +32,22 @@ export default function NavBar() {
         </button>
 
         <nav className={`nav__links ${open ? "is-open" : ""}`}>
-          <NavLink to="/" className={({isActive}) => `nav__link ${isActive ? "active" : ""}`} onClick={close}>
+          <NavLink to="/" end className={({isActive}) => `nav__link ${isActive ? "active" : ""}`} onClick={close}>
             Find Doctors
           </NavLink>
-          <NavLink to="/results" className={({isActive}) => `nav__link ${isActive ? "active" : ""}`} onClick={close}>
+
+          {/* Jump to the search section on Home so Results isn't opened empty */}
+          <NavLink
+            to="/#search"
+            className={({isActive}) => `nav__link ${isActive ? "active" : ""}`}
+            onClick={close}
+          >
             Hospitals
           </NavLink>
-          <a href="#" className="nav__link" onClick={close}>Medicines</a>
+
+          {/* Placeholder: use a button so it doesn't jump to top */}
+          <button type="button" className="nav__link" onClick={close}>Medicines</button>
+
           <NavLink to="/my-bookings" className={({isActive}) => `nav__link ${isActive ? "active" : ""}`} onClick={close}>
             My Bookings
           </NavLink>
