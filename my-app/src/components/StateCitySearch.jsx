@@ -14,106 +14,62 @@ export default function StateCitySearch() {
   useEffect(() => {
     setLoadingStates(true);
     getStates()
-      .then(({ data }) => setStates(data || []))
+      .then(({ data }) => setStates(Array.isArray(data) ? data : []))
       .catch(() => setStates([]))
       .finally(() => setLoadingStates(false));
   }, []);
 
   useEffect(() => {
-    if (!stateCode) {
-      setCities([]);
-      setCity("");
-      return;
-    }
+    if (!stateCode) { setCities([]); setCity(""); return; }
     setLoadingCities(true);
     getCities(stateCode)
-      .then(({ data }) => setCities(data || []))
+      .then(({ data }) => setCities(Array.isArray(data) ? data : []))
       .catch(() => setCities([]))
       .finally(() => setLoadingCities(false));
   }, [stateCode]);
 
   const onSearch = () => {
-    if (!stateCode || !city) {
-      alert("Please select both state and city");
-      return;
-    }
-    navigate(
-      `/results?state=${encodeURIComponent(stateCode)}&city=${encodeURIComponent(city)}`
-    );
+    if (!stateCode || !city) return alert("Please select both state and city");
+    navigate(`/results?state=${encodeURIComponent(stateCode)}&city=${encodeURIComponent(city)}`);
   };
-
-  const readState = (s) =>
-    typeof s === "string" ? s : s?.state || s?.code || s?.name || "";
-  const readCity = (c) =>
-    typeof c === "string" ? c : c?.city || c?.name || "";
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSearch();
-      }}
+      onSubmit={(e) => { e.preventDefault(); onSearch(); }}
       className="search-bar"
       style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 12 }}
-      aria-label="Search medical centers"
     >
-      <label htmlFor="state" className="sr-only">
-        State
-      </label>
-      <select
-        id="state"
-        data-cy="state-select"
-        value={stateCode}
-        onChange={(e) => setStateCode(e.target.value)}
-        disabled={loadingStates}
-        aria-busy={loadingStates}
-      >
-        <option value="">
-          {loadingStates ? "Loading states..." : "Select State"}
-        </option>
-        {states.map((s) => {
-          const val = readState(s);
-          return (
-            <option key={val} value={val}>
-              {val}
-            </option>
-          );
-        })}
-      </select>
+      <div className="field">
+        <label htmlFor="state">State</label>
+        <select
+          id="state"
+          value={stateCode}
+          onChange={(e) => setStateCode(e.target.value)}
+          disabled={loadingStates}
+        >
+          <option value="">{loadingStates ? "Loading states..." : "Select State"}</option>
+          {states.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
 
-      <label htmlFor="city" className="sr-only">
-        City
-      </label>
-      <select
-        id="city"
-        data-cy="city-select"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        disabled={!stateCode || loadingCities}
-        aria-busy={loadingCities}
-      >
-        <option value="">
-          {loadingCities ? "Loading cities..." : "Select City"}
-        </option>
-        {cities.map((c) => {
-          const val = readCity(c);
-          return (
-            <option key={val} value={val}>
-              {val}
-            </option>
-          );
-        })}
-      </select>
+      <div className="field">
+        <label htmlFor="city">City</label>
+        <select
+          id="city"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          disabled={!stateCode || loadingCities}
+        >
+          <option value="">{loadingCities ? "Loading cities..." : "Select City"}</option>
+          {cities.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
 
-      <button
-        id="searchBtn"
-        data-cy="search-btn"
-        type="submit"
-        className="btn btn-primary"
-        disabled={!stateCode || !city}
-      >
-        Search
-      </button>
+      <button id="searchBtn" type="submit" className="btn btn-primary">Search</button>
     </form>
   );
 }
