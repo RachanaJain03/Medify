@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "./CenterCard.css"
 
 const FALLBACK_IMG =
   "data:image/svg+xml;utf8," +
