@@ -1,46 +1,42 @@
 import StateCitySearch from "../components/StateCitySearch";
 import SectionTitle from "../components/SectionStyles";   // make sure the file is SectionTitle.jsx
 import FAQ from "../components/FAQ";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import "./Home.css"
+import Hero from "../components/Hero";
 
 export default function Home() {
   return (
     <main>
-      {/* Hero + Search */}
-      
-      <section className="section section--alt" style={{ paddingTop: 28, paddingBottom: 28 }}>
-        <div className="container">
-          <div className="card" style={{ display: "grid", gap: 16 }}>
-            <SectionTitle
-              eyebrow="Best healthcare near you"
-              title="Find Medical Centers"
-              subtitle="Search by state and city to discover centers and book an appointment."
-              align="left"
-            />
-            <StateCitySearch />
+      {/* HERO (includes the search card) */}
+      <Hero />
+
+      {/* Remove this block if your <Hero /> already shows the search. If you keep it, you’ll have two search bars. */}
+      {false && (
+        <section className="section section--alt" style={{ paddingTop: 28, paddingBottom: 28 }}>
+          <div className="container">
+            <div className="card" style={{ display: "grid", gap: 16 }}>
+              <SectionTitle
+                eyebrow="Best healthcare near you"
+                title="Find Medical Centers"
+                subtitle="Search by state and city to discover centers and book an appointment."
+                align="left"
+              />
+              <StateCitySearch />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Find by Specialization */}
       <section className="section">
         <div className="container">
           <SectionTitle eyebrow="Find by Specialization" title="Browse top specialties" />
           <div className="grid grid-4">
-            {[
-              "Cardiology",
-              "Dermatology",
-              "Dentistry",
-              "Neurology",
-              "Orthopedics",
-              "Pediatrics",
-              "ENT",
-              "General",
-            ].map((s) => (
+            {["Cardiology","Dermatology","Dentistry","Neurology","Orthopedics","Pediatrics","ENT","General"].map((s) => (
               <div className="card" key={s} style={{ textAlign: "center" }}>
                 <div style={{ width: 64, height: 64, margin: "0 auto 8px", borderRadius: 12, background: "#eef2ff" }} />
                 <div style={{ fontWeight: 700 }}>{s}</div>
@@ -113,10 +109,7 @@ export default function Home() {
       {/* Stats band */}
       <section className="section">
         <div className="container">
-          <div
-            className="card"
-            style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", textAlign: "center", gap: 12 }}
-          >
+          <div className="card" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", textAlign: "center", gap: 12 }}>
             {[
               ["Our Families", "50K+"],
               ["Qualified Doctors", "500+"],
@@ -138,10 +131,7 @@ export default function Home() {
           <SectionTitle eyebrow="Frequently Asked Questions" title="Need help?" />
           <FAQ
             items={[
-              {
-                q: "How do I book an appointment?",
-                a: "Search by state and city, pick a center, then choose a date and time.",
-              },
+              { q: "How do I book an appointment?", a: "Search by state and city, pick a center, then choose a date and time." },
               { q: "Can I reschedule?", a: "Yes. Cancel in My Bookings and book a new slot." },
               { q: "How far in advance?", a: "You can book up to 7 days ahead." },
             ]}
@@ -152,10 +142,7 @@ export default function Home() {
       {/* App download CTA */}
       <section className="section">
         <div className="container">
-          <div
-            className="card"
-            style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16, alignItems: "center" }}
-          >
+          <div className="card" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 16, alignItems: "center" }}>
             <div style={{ height: 160, borderRadius: 12, background: "#e2e8f0" }} />
             <div>
               <h3 style={{ marginTop: 0 }}>Download the Medify App</h3>
@@ -173,31 +160,10 @@ export default function Home() {
       <footer className="section section--alt">
         <div className="container">
           <div className="grid grid-4">
-            <div>
-              <h4>Medify</h4>
-              <p style={{ color: "var(--muted)" }}>Quality healthcare, simplified.</p>
-            </div>
-            <div>
-              <h4>Company</h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}>
-                <li>About</li>
-                <li>Careers</li>
-              </ul>
-            </div>
-            <div>
-              <h4>Support</h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}>
-                <li>Help Center</li>
-                <li>Contact</li>
-              </ul>
-            </div>
-            <div>
-              <h4>Legal</h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}>
-                <li>Privacy</li>
-                <li>Terms</li>
-              </ul>
-            </div>
+            <div><h4>Medify</h4><p style={{ color: "var(--muted)" }}>Quality healthcare, simplified.</p></div>
+            <div><h4>Company</h4><ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}><li>About</li><li>Careers</li></ul></div>
+            <div><h4>Support</h4><ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}><li>Help Center</li><li>Contact</li></ul></div>
+            <div><h4>Legal</h4><ul style={{ listStyle: "none", padding: 0, margin: 0, color: "var(--muted)" }}><li>Privacy</li><li>Terms</li></ul></div>
           </div>
           <p style={{ color: "var(--muted)", marginTop: 16 }}>&copy; {new Date().getFullYear()} Medify</p>
         </div>
