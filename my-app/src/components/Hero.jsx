@@ -1,5 +1,5 @@
 import StateCitySearch from "./StateCitySearch";
-import heroImg from "../assets/hero.jpg";
+//import heroImg from "../assets/hero.jpg";
 
 const CATS = [
     { icon: "👨‍⚕️", label: "Doctors" },
@@ -37,7 +37,7 @@ export default function Hero(){
             {/* Put an image named /hero-doctors.png in /public.
                We hide it gracefully if it’s missing. */}
             <img
-              src={heroImg}
+              src= "/hero.jpg"
               alt=""
               onError={(e) => (e.currentTarget.style.display = "none")}
             />

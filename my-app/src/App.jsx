@@ -14,9 +14,6 @@ export default function App() {
         <Route path="/results" element={<Results />} />
         <Route path="/booking/:centerId" element={<Booking />} />
         <Route path="/my-bookings" element={<MyBookings />} />
-        {/* alias so /my-booking also works */}
-        <Route path="/my-booking" element={<Navigate to="/my-bookings" replace />} />
-        {/* catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
