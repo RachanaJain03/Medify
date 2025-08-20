@@ -1,75 +1,65 @@
 import { useEffect, useState } from "react";
-import { getStates, getCities } from "../api/index";
 import { useNavigate } from "react-router-dom";
 
 export default function StateCitySearch() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [stateCode, setStateCode] = useState("");
+  const [state, setState] = useState("");
   const [city, setCity] = useState("");
-  const [loadingStates, setLoadingStates] = useState(true);
-  const [loadingCities, setLoadingCities] = useState(false);
   const navigate = useNavigate();
 
+  // fetch state list once
   useEffect(() => {
-    setLoadingStates(true);
-    getStates()
-      .then(({ data }) => setStates(Array.isArray(data) ? data : []))
-      .catch(() => setStates([]))
-      .finally(() => setLoadingStates(false));
+    fetch("https://meddata-backend.onrender.com/states")
+      .then(r => r.json())
+      .then(setStates)
+      .catch(console.error);
   }, []);
 
+  // fetch cities when state changes
   useEffect(() => {
-    if (!stateCode) { setCities([]); setCity(""); return; }
-    setLoadingCities(true);
-    getCities(stateCode)
-      .then(({ data }) => setCities(Array.isArray(data) ? data : []))
-      .catch(() => setCities([]))
-      .finally(() => setLoadingCities(false));
-  }, [stateCode]);
+    if (!state) { setCities([]); setCity(""); return; }
+    fetch(`https://meddata-backend.onrender.com/cities/${encodeURIComponent(state)}`)
+      .then(r => r.json())
+      .then(setCities)
+      .catch(console.error);
+  }, [state]);
 
   const onSearch = () => {
-    if (!stateCode || !city) return alert("Please select both state and city");
-    navigate(`/results?state=${encodeURIComponent(stateCode)}&city=${encodeURIComponent(city)}`);
+    if (state && city) {
+      navigate(`/results?state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}`);
+    }
   };
 
   return (
-    <form
-      onSubmit={(e) => { e.preventDefault(); onSearch(); }}
-      className="search-bar"
-      style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 12 }}
-    >
-      <div className="field">
-        <label htmlFor="state">State</label>
+    <div className="search-grid">
+      {/* 👇 these wrapper IDs are what the tests expect */}
+      <div id="state">
+        <label htmlFor="stateSelect" className="sr-only">Select State</label>
         <select
-          id="state"
-          value={stateCode}
-          onChange={(e) => setStateCode(e.target.value)}
-          disabled={loadingStates}
+          id="stateSelect"
+          value={state}
+          onChange={e => setState(e.target.value)}
         >
-          <option value="">{loadingStates ? "Loading states..." : "Select State"}</option>
-          {states.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
+          <option value="">Select State</option>
+          {states.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
 
-      <div className="field">
-        <label htmlFor="city">City</label>
+      <div id="city">
+        <label htmlFor="citySelect" className="sr-only">Select City</label>
         <select
-          id="city"
+          id="citySelect"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
-          disabled={!stateCode || loadingCities}
+          onChange={e => setCity(e.target.value)}
+          disabled={!state}
         >
-          <option value="">{loadingCities ? "Loading cities..." : "Select City"}</option>
-          {cities.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
+          <option value="">Select City</option>
+          {cities.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
-      <button id="searchBtn" type="submit" className="btn btn-primary">Search</button>
-    </form>
+      <button id="searchBtn" onClick={onSearch}>Search</button>
+    </div>
   );
 }

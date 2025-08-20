@@ -13,7 +13,11 @@ function normalizeCenter(raw, fallbackId) {
     state: raw.state ?? raw.State ?? "",
   };
 }
-
+const saveBooking = (booking) => {
+  const key = "bookings";
+  const prev = JSON.parse(localStorage.getItem(key) || "[]");
+  localStorage.setItem(key, JSON.stringify([booking, ...prev]));
+};
 function getNextDays(n = 7) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);

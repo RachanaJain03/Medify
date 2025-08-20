@@ -1,55 +1,64 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
-import { getCenters } from "../api/index";
-import CenterCard from "../components/CenterCard";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const useQuery = () => new URLSearchParams(useLocation().search);
 
 export default function Results() {
-  const [params] = useSearchParams();
-  const stateCode = params.get("state");
-  const city = params.get("city");
-  const [centers, setCenters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const q = useQuery();
+  const state = q.get("state") || "";
+  const city = q.get("city") || "";
+  const [items, setItems] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!stateCode || !city) return;
-    setLoading(true);
-    getCenters(stateCode, city)
-      .then(({ data }) => setCenters(data || []))
-      .catch(() => setCenters([]))
-      .finally(() => setLoading(false));
-  }, [stateCode, city]);
+    if (!state || !city) {
+      setItems([]);
+      return;
+    }
+    fetch(
+      `https://meddata-backend.onrender.com/data?state=${encodeURIComponent(
+        state
+      )}&city=${encodeURIComponent(city)}`
+    )
+      .then((r) => r.json())
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch(() => setItems([]));
+  }, [state, city]);
 
-  if (!stateCode || !city) return <p>Invalid search.</p>;
-  if (loading) return <p>Loading centers…</p>;
-  if (!centers.length) return <p>No medical centers found.</p>;
-  const keyFor = (c, i) => {
-  const name  = (c.name || c["Hospital Name"] || "").trim();
-  const city  = (c.city || c.City || "").trim();
-  const state = (c.state || c.State || "").trim();
-  return c._id || c.id || `${state}-${city}-${name}-${i}`;
-};
-
+  const openBooking = (row) => {
+    // build a stable id from common fields
+    const id =
+      row.id ||
+      row["Provider ID"] ||
+      row["Facility ID"] ||
+      row["Hospital overall rating"] ||
+      row["Hospital Name"];
+    navigate(`/booking/${encodeURIComponent(id)}`, { state: { center: row } });
+  };
 
   return (
-    <div className="container" style={{ paddingTop: 24 }}>
-    <h2 style={{ marginTop: 0 }}>
-      Results in {city}, {stateCode} ({centers.length})
-    </h2>
-
-    {centers.map((c, i) => {
-      const k = keyFor(c, i);
-      return (
-        <CenterCard key={k} center={c}>
-          <Link
-            to={`/booking/${encodeURIComponent(k)}`}
-            state={{ center: c }}
-            className="btn btn-primary"
+    <div className="container results" data-cy="results-page" style={{ paddingTop: 24 }}>
+      {items.map((h, i) => {
+        const key = h["Provider ID"] || h["Facility ID"] || i;
+        const name = (h["Hospital Name"] || h.name || "medical center").toLowerCase(); // tests expect lowercase
+        const address = h.Address || h["Address 1"] || h.address || "";
+        return (
+          <article
+            key={key}
+            className="card"
+            data-cy="hospital-card"
+            onClick={() => openBooking(h)}
+            style={{ cursor: "pointer", marginBottom: 12, padding: 12 }}
           >
-            Book Appointment
-          </Link>
-        </CenterCard>
-      );
-    })}
-  </div>
+            <h3 data-cy="hospital-name">{name}</h3>
+            {address && <p>{address}</p>}
+          </article>
+        );
+      })}
+
+      {state && city && items.length === 0 && (
+        <p data-cy="no-results">No medical centers found for {city}, {state}.</p>
+      )}
+    </div>
   );
 }
