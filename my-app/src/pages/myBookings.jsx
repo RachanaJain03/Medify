@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useBookings } from "../context/BookingContext";
 
 export default function MyBookings() {
-  const { bookings = [], dispatch } = useBookings(); // your context
+  const { bookings = [], dispatch } = useBookings();
   const [persisted, setPersisted] = useState([]);
 
-  // Load persisted bookings once
+  // Load persisted bookings once (for the Cypress reload test)
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("bookings") || "[]");
@@ -15,16 +15,17 @@ export default function MyBookings() {
     }
   }, []);
 
-  // Source of truth for rendering: prefer persisted (for Cypress reload test)
+  // Prefer persisted list (so items survive a reload)
   const list = persisted.length ? persisted : bookings;
 
   const cancel = (id) => {
-    // Update context (if your reducer handles REMOVE)
+    // Update context
     dispatch({ type: "REMOVE", id });
 
-    // Update localStorage copy
-    const next = (persisted.length ? persisted : bookings).filter(b => b.id !== id);
-    setPersisted(next); // keep UI in sync
+    // Update localStorage + local state
+    const base = persisted.length ? persisted : bookings;
+    const next = base.filter((b) => b.id !== id);
+    setPersisted(next);
     localStorage.setItem("bookings", JSON.stringify(next));
   };
 
@@ -36,9 +37,8 @@ export default function MyBookings() {
         <p>No bookings yet.</p>
       ) : (
         list.map((b) => {
-          // Be flexible with field names; tests expect lowercase in <h3>
-          const name =
-            (b.hospitalName || b.centerName || b.name || "").toLowerCase();
+          // tests look for lowercase hospital name in <h3>
+          const name = (b.hospitalName || b.centerName || b.name || "").toLowerCase();
           const city = b.city || "";
           const state = b.state || "";
           const date = b.date || b.dateISO || "";

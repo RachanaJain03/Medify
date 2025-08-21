@@ -46,6 +46,8 @@ export default function Booking() {
   const [time, setTime] = useState("");
 
   const days = useMemo(() => getNextDays(7), []);
+  const selectedKey = dateObj ? dateObj.toISOString().slice(0, 10) : null;
+  const selectedLabel = selectedKey ? (days.find(d => d.key === selectedKey)?.label || "") : "";
 
   const confirm = () => {
     if (!dateObj || !time) return alert("Pick a date and time");
@@ -54,11 +56,14 @@ export default function Booking() {
       id: crypto.randomUUID(),
       centerId: center.id,
       centerName: center.name,
+      hospitalName: center.name, 
       state: center.state,
       city: center.city,
       dateISO: formatISO(dateObj, { representation: "date" }),
       time,
     };
+    
+    saveBooking(booking);
     dispatch({ type: "ADD", payload: booking });
     navigate("/my-bookings"); // <- plural
   };
@@ -97,6 +102,11 @@ export default function Booking() {
       <p>
         Selected:&nbsp;
         {dateObj && time ? `${dateObj.toDateString()} at ${time}` : "None"}
+      </p>
+      <p>
+        Selected:&nbsp;
+        {selectedLabel ? `${selectedLabel}${time ? `at ${time}` : ""}`
+        : "None"}
       </p>
 
       <button
