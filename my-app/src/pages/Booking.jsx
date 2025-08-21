@@ -42,7 +42,11 @@ export default function Booking() {
 
   const center = useMemo(() => normalizeCenter(state?.center, centerId), [state, centerId]);
 
-  const [dateObj, setDateObj] = useState(null);
+  const [dateObj, setDateObj] = useState(()=> {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
   const [time, setTime] = useState("");
 
   const days = useMemo(() => getNextDays(7), []);
@@ -98,11 +102,6 @@ export default function Booking() {
         dateObj={dateObj}
         onPick={setTime}
       />
-
-      <p>
-        Selected:&nbsp;
-        {dateObj && time ? `${dateObj.toDateString()} at ${time}` : "None"}
-      </p>
       <p>
         Selected:&nbsp;
         {selectedLabel ? `${selectedLabel}${time ? `at ${time}` : ""}`
