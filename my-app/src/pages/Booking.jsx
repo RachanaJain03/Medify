@@ -96,6 +96,9 @@ export default function Booking() {
       </div>
 
       {/* Time slots for selected day */}
+      <p>Morning</p>
+      <p>Afternoon</p>
+      <p>Evening</p>
       <TimeSlots
         bookings={bookings}
         centerId={center.id}
