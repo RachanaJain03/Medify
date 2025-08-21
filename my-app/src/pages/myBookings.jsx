@@ -5,7 +5,7 @@ export default function MyBookings() {
   const { bookings = [], dispatch } = useBookings();
   const [persisted, setPersisted] = useState([]);
 
-  // Load persisted bookings once (for the Cypress reload test)
+  // Load persisted bookings once (Cypress seeds localStorage directly)
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("bookings") || "[]");
@@ -15,16 +15,16 @@ export default function MyBookings() {
     }
   }, []);
 
-  // Prefer persisted list (so items survive a reload)
+  // Prefer persisted for rendering so reload shows items
   const list = persisted.length ? persisted : bookings;
 
-  const cancel = (id) => {
-    // Update context
-    dispatch({ type: "REMOVE", id });
+  const cancel = (id, index) => {
+    // Update context if your reducer supports REMOVE
+    if (id) dispatch({ type: "REMOVE", id });
 
-    // Update localStorage + local state
+    // Update localStorage + local state (handle items without id)
     const base = persisted.length ? persisted : bookings;
-    const next = base.filter((b) => b.id !== id);
+    const next = base.filter((b, i) => (b.id ? b.id !== id : i !== index));
     setPersisted(next);
     localStorage.setItem("bookings", JSON.stringify(next));
   };
@@ -36,21 +36,30 @@ export default function MyBookings() {
       {list.length === 0 ? (
         <p>No bookings yet.</p>
       ) : (
-        list.map((b) => {
-          // tests look for lowercase hospital name in <h3>
-          const name = (b.hospitalName || b.centerName || b.name || "").toLowerCase();
-          const city = b.city || "";
-          const state = b.state || "";
-          const date = b.date || b.dateISO || "";
-          const time = b.time || "";
+        list.map((b, i) => {
+          // ✅ Support both your app's shape and the Cypress-seeded shape
+          const name = (
+            b.hospitalName ||
+            b.centerName ||
+            b.name ||
+            b["Hospital Name"] ||
+            ""
+          ).toLowerCase();
+
+          const city  = b.city  || b.City  || "";
+          const state = b.state || b.State || "";
+          const date  = b.date || b.dateISO || b.bookingDate || "";
+          const time  = b.time || b.bookingTime || "";
+
+          const key = b.id || `${name}-${date}-${time}-${i}`;
 
           return (
-            <div key={b.id || `${name}-${date}-${time}`} className="card" style={{ marginBottom: 12 }}>
+            <div key={key} className="card" style={{ marginBottom: 12 }}>
               <h3>{name}</h3>
               {(city || state) && <p>{[city, state].filter(Boolean).join(", ")}</p>}
               {(date || time) && <p>{[date, time].filter(Boolean).join(" • ")}</p>}
               {b.id && (
-                <button onClick={() => cancel(b.id)} className="btn">Cancel</button>
+                <button onClick={() => cancel(b.id, i)} className="btn">Cancel</button>
               )}
             </div>
           );
