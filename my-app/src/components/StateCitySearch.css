@@ -1,0 +1,34 @@
+.combo__input{
+  display:flex; align-items:center; gap:8px;
+  background:#f7f9ff; border:1px solid #eef3ff;
+  border-radius:12px; padding:12px 14px; height:44px;
+}
+.combo__input.is-disabled{ opacity:.6; pointer-events:none; }
+
+.combo__input input{
+  border:0; outline:0; background:transparent;
+  width:100%; color:#334155; font-weight:500;
+}
+.combo__icon{ color:#94a3b8; }
+
+.combo__list{
+  display:none;
+  background:#fff; border:1px solid #e6eeff; border-radius:12px;
+  max-height:220px; overflow:auto; margin:0; padding:6px 0;
+  box-shadow:0 8px 24px rgba(15, 23, 42, .08); z-index:10;
+}
+.combo__list.is-open{ display:block; }
+.combo__list li{
+  list-style:none; padding:8px 12px; cursor:pointer;
+  border-bottom:1px solid #f4f7ff;
+}
+.combo__list li:last-child{ border-bottom:none; }
+.combo__list li:hover, .combo__list li[aria-selected="true"]{ background:#eef6ff; }
+
+/* button shape like the screenshot */
+.searchbtn{
+  height:44px; padding:0 16px; border-radius:10px; display:inline-flex; align-items:center;
+}
+
+/* keep anchor target visible below sticky navbar */
+#search{ scroll-margin-top: 80px; }

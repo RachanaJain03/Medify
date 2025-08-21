@@ -29,3 +29,4 @@ a{color:inherit}
 .btn{padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700}
 .btn-primary{background:var(--brand); color:#fff}
 .btn-primary:hover{background:var(--brand-600)}
+#search { scroll-margin-top: 80px; }

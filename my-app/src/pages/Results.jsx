@@ -38,7 +38,7 @@ export default function Results() {
   return (
     <div className="container results" data-cy="results-page" style={{ paddingTop: 24 }}>
       {/* ✅ EXACT format Cypress expects */}
-      <h1>Hospitals in {city.toUpperCase()}, {state}</h1>
+      <h1 data-cy="results-title">Hospitals in {city.toUpperCase()}, {state}</h1>
       {items.length > 0 && (
       <p className="results__count" style={{ margin: "6px 0 12px" }}>
         {items.length} medical centers available in {city.toLowerCase()}
