@@ -39,6 +39,11 @@ export default function Results() {
     <div className="container results" data-cy="results-page" style={{ paddingTop: 24 }}>
       {/* ✅ EXACT format Cypress expects */}
       <h1>Hospitals in {city.toUpperCase()}, {state}</h1>
+      {items.length > 0 && (
+      <p className="results__count" style={{ margin: "6px 0 12px" }}>
+        {items.length} medical centers available in {city.toLowerCase()}
+      </p>
+    )}
 
       {items.map((h, i) => {
         const key = h["Provider ID"] || h["Facility ID"] || i;
