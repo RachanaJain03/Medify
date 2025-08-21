@@ -97,7 +97,7 @@ export default function StateCitySearch() {
         {/* dropdown list (ul/li) required by tests; absolutely positioned so it doesn't push the page */}
         <ul
           role="listbox"
-          className={`combo__list ${openState ? "is-open" : ""}`}
+          className= "combo__list is-open"
           style={{ position: "absolute", left: 0, right: 0, top: "calc(100% + 6px)" }}
         >
           {filteredStates.map((s) => (
@@ -133,7 +133,7 @@ export default function StateCitySearch() {
 
         <ul
           role="listbox"
-          className={`combo__list ${openCity ? "is-open" : ""}`}
+          className= "combo__list is-open"
           style={{ position: "absolute", left: 0, right: 0, top: "calc(100% + 6px)" }}
         >
           {filteredCities.map((c) => (
